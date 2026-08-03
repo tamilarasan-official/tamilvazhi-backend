@@ -1,0 +1,42 @@
+# Local development dependencies only. In production, Dokploy provisions
+# MongoDB as a service and object storage lives in Cloudflare R2 (or MinIO).
+#
+#   docker compose up -d
+#   npm install && npm run setup && npm run dev
+#
+services:
+  mongo:
+    image: mongo:7
+    container_name: portal24-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: portal
+      MONGO_INITDB_ROOT_PASSWORD: portal
+      MONGO_INITDB_DATABASE: portal24
+    ports:
+      - "27018:27017" # 27018 on the host to avoid clashing with a local mongod
+    volumes:
+      - mongodata:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  storage:
+    image: minio/minio:latest
+    container_name: portal24-storage
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: portal24admin
+      MINIO_ROOT_PASSWORD: portal24admin
+    ports:
+      - "9000:9000" # S3 API
+      - "9001:9001" # web console — http://localhost:9001
+    volumes:
+      - miniodata:/data
+
+volumes:
+  mongodata:
+  miniodata:

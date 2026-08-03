@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    // NodeNext (not "bundler") because the compiled output runs directly under
+    // Node's ESM loader — relative imports therefore carry explicit .js
+    // extensions throughout src/.
+    "target": "ES2022",
+    "lib": ["ES2023"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}
