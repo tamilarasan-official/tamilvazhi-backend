@@ -33,10 +33,10 @@ export async function seedSampleCourse(): Promise<void> {
   const course = await Course.create({
     title: "Getting Started",
     slug: "getting-started",
-    subtitle: "Your first course on Portal24",
+    subtitle: "Your first course on Tamilvazhi",
     description:
       "Delete this once you have uploaded your own material. It exists so you can see how modules, videos and documents appear to students.",
-    accessCode: "START24",
+    accessCode: "STARTNOW",
     published: true,
     position: 0,
     modules: [

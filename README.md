@@ -1,8 +1,8 @@
-# portal24-api
+# tamilvazhi-api
 
 Backend for the course portal. **Express + TypeScript + MongoDB (Mongoose) + S3-compatible object storage.**
 
-Pairs with [`portal24-web`](../frontend) — deploy each as its own Dokploy application.
+Pairs with [`tamilvazhi-web`](../frontend) — deploy each as its own Dokploy application.
 
 ---
 
@@ -125,7 +125,7 @@ Cookie-authenticated. `admin` = instructor session required; `code` = student ac
 
 ### 1. MongoDB service
 
-**Create → Database → MongoDB.** Name it `portal24-mongo`, set a strong password, note the internal hostname. 1 GB storage is plenty. **Do not expose it publicly** — the API reaches it over Dokploy's internal network.
+**Create → Database → MongoDB.** Name it `tamilvazhi-mongo`, set a strong password, note the internal hostname. 1 GB storage is plenty. **Do not expose it publicly** — the API reaches it over Dokploy's internal network.
 
 ### 2. Object storage
 
@@ -154,7 +154,7 @@ Environment tab:
 ```
 NODE_ENV=production
 PORT=4000
-MONGODB_URI=mongodb://portal:PASSWORD@portal24-mongo:27017/portal24?authSource=admin
+MONGODB_URI=mongodb://tamilvazhi:PASSWORD@tamilvazhi-mongo:27017/tamilvazhi?authSource=admin
 AUTH_SECRET=<48+ random bytes>
 ADMIN_EMAIL=instructor@yoursite.com
 ADMIN_PASSWORD=<a strong password>
@@ -169,7 +169,7 @@ COOKIE_SECURE=true
 
 S3_ENDPOINT=https://<ACCOUNT_ID>.r2.cloudflarestorage.com
 S3_REGION=auto
-S3_BUCKET=portal24
+S3_BUCKET=tamilvazhi
 S3_ACCESS_KEY_ID=<r2 key id>
 S3_SECRET_ACCESS_KEY=<r2 secret>
 S3_FORCE_PATH_STYLE=false

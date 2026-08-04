@@ -14,8 +14,8 @@ import { env } from "../config/env.js";
  * same-site request. That avoids third-party-cookie blocking entirely.
  */
 
-export const ADMIN_COOKIE = "p24_admin";
-export const ACCESS_COOKIE = "p24_access";
+export const ADMIN_COOKIE = "tv_admin";
+export const ACCESS_COOKIE = "tv_access";
 
 const ADMIN_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 const ACCESS_MAX_AGE = 60 * 60 * 24 * 90; // 90 days — students shouldn't retype the code every visit

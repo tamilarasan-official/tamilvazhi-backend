@@ -7,12 +7,12 @@
 services:
   mongo:
     image: mongo:7
-    container_name: portal24-mongo
+    container_name: tamilvazhi-mongo
     restart: unless-stopped
     environment:
-      MONGO_INITDB_ROOT_USERNAME: portal
-      MONGO_INITDB_ROOT_PASSWORD: portal
-      MONGO_INITDB_DATABASE: portal24
+      MONGO_INITDB_ROOT_USERNAME: tamilvazhi
+      MONGO_INITDB_ROOT_PASSWORD: tamilvazhi
+      MONGO_INITDB_DATABASE: tamilvazhi
     ports:
       - "27018:27017" # 27018 on the host to avoid clashing with a local mongod
     volumes:
@@ -25,12 +25,12 @@ services:
 
   storage:
     image: minio/minio:latest
-    container_name: portal24-storage
+    container_name: tamilvazhi-storage
     restart: unless-stopped
     command: server /data --console-address ":9001"
     environment:
-      MINIO_ROOT_USER: portal24admin
-      MINIO_ROOT_PASSWORD: portal24admin
+      MINIO_ROOT_USER: tamilvazhiadmin
+      MINIO_ROOT_PASSWORD: tamilvazhiadmin
     ports:
       - "9000:9000" # S3 API
       - "9001:9001" # web console — http://localhost:9001
