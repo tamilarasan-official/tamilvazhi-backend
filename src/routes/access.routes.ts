@@ -28,14 +28,23 @@ accessRouter.post(
     }
 
     const code = parsed.data.code.trim().toUpperCase();
-    const course = await Course.findOne({ accessCode: code, published: true })
-      .select("_id slug title")
+    const course = await Course.findOne({ accessCode: code })
+      .select("_id slug title published")
       .lean();
 
     await res.locals.recordAttempt?.(Boolean(course));
 
     if (!course) {
       res.status(404).json({ error: "That access code isn't valid. Check it with your instructor." });
+      return;
+    }
+
+    // A correct code for a draft is the instructor's most common mix-up: they
+    // share the code before pressing Publish. Say so, instead of "invalid".
+    if (!course.published) {
+      res.status(403).json({
+        error: "This course hasn't been published yet. Ask your instructor to publish it, then try again.",
+      });
       return;
     }
 
