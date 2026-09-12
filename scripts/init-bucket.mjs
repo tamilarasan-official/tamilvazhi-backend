@@ -39,7 +39,6 @@ const origins = (process.env.CORS_ORIGINS || "http://localhost:3000")
   .split(",")
   .map((o) => o.trim().replace(/\/$/, ""))
   .filter(Boolean);
-const origin = origins[0];
 
 if (!bucket) {
   console.error("S3_BUCKET is not set. Copy .env.example to .env first.");
@@ -56,15 +55,23 @@ const client = new S3Client({
   },
 });
 
-const corsRules = [
-  {
-    AllowedOrigins: Array.from(new Set([...origins, "http://localhost:3000"])),
-    AllowedMethods: ["GET", "PUT", "POST", "DELETE", "HEAD"],
-    AllowedHeaders: ["*"],
-    ExposeHeaders: ["ETag", "Content-Length", "Content-Range", "Accept-Ranges"],
-    MaxAgeSeconds: 3600,
-  },
-];
+// Only add the local dev origin outside production, so a live bucket never
+// answers to localhost.
+const allowedOrigins = Array.from(
+  new Set(process.env.NODE_ENV === "production" ? origins : [...origins, "http://localhost:3000"]),
+);
+
+// One rule per origin. Some S3 implementations (Garage among them) do not echo
+// the matching origin back; they join every AllowedOrigins entry of the matched
+// rule into a single Access-Control-Allow-Origin header, which browsers reject
+// as "contains multiple values". A rule with exactly one origin sidesteps that.
+const corsRules = allowedOrigins.map((allowedOrigin) => ({
+  AllowedOrigins: [allowedOrigin],
+  AllowedMethods: ["GET", "PUT", "POST", "DELETE", "HEAD"],
+  AllowedHeaders: ["*"],
+  ExposeHeaders: ["ETag", "Content-Length", "Content-Range", "Accept-Ranges"],
+  MaxAgeSeconds: 3600,
+}));
 
 async function main() {
   try {
@@ -79,7 +86,7 @@ async function main() {
     await client.send(
       new PutBucketCorsCommand({ Bucket: bucket, CORSConfiguration: { CORSRules: corsRules } }),
     );
-    console.log(`[storage] CORS applied for origin ${origin}`);
+    console.log(`[storage] CORS applied for ${allowedOrigins.join(", ")}`);
   } catch (error) {
     console.warn(
       `[storage] could not set CORS automatically (${error.name}). Apply this rule in your provider's dashboard:\n` +
