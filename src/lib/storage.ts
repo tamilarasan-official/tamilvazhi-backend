@@ -33,6 +33,13 @@ export function s3(): S3Client {
         accessKeyId: env.s3.accessKeyId,
         secretAccessKey: env.s3.secretAccessKey,
       },
+      // Newer SDKs add a CRC32 checksum to every request by default, and it
+      // leaks into presigned URLs as an empty-body checksum. The browser then
+      // PUTs real bytes, the checksum no longer matches, and S3-compatible
+      // stores that verify it (Garage, MinIO) reject the part with a 400.
+      // Only compute checksums where the operation actually demands one.
+      requestChecksumCalculation: "WHEN_REQUIRED",
+      responseChecksumValidation: "WHEN_REQUIRED",
     });
   }
   return client;
